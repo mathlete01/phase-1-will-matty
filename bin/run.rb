@@ -1,5 +1,7 @@
 require_relative '../config/environment'
+require_relative 'api.rb'
 
-
-
-puts "HELLO WORLD"
+issue_array = ["tobacco", "pharmaceuticals", "abortion"]
+get_bills_by_issue("tobacco")
+binding.pry
+0
