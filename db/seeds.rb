@@ -1,5 +1,5 @@
-matty = CongressMember.create(name: "Matty", state: "CA")
-will = CongressMember.create(name: "will", party: "I")
+matty = CongressMember.create(name: "Matty", state: "CA", party: "Birthday")
+will = CongressMember.create(name: "will", party: "I", state: "CA")
 
 food = Issue.create(name: "Food")
 
