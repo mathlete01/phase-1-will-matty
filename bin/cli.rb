@@ -4,6 +4,7 @@ class CLI
     puts "=" * 45
   end
 
+  #Main menu would be nice to add some ascii
   def menu
     puts
     puts "Main Menu"
@@ -20,6 +21,7 @@ class CLI
     self.main_switch_board(input)
   end
 
+  #Logic for directing main menu inputs
   def main_switch_board(input)
     case input
     when "1"
@@ -31,7 +33,7 @@ class CLI
     when "4"
       #search_legislation_by_bill
     when "5" || "exit"
-      puts "Thanks for stopping by!"
+      puts "Remember to Vote!"
       return
     else
       puts "#{input} is not a valid option "
@@ -61,6 +63,7 @@ class CLI
     self.more_info_on_member(menu_hash)
   end
 
+  #Finds congress member by name, Not done yet!
   def find_congress_member_by_name
     puts
     puts "Enter congress member name:"
@@ -71,6 +74,7 @@ class CLI
     display_congress_member(member, index = nil)
   end
 
+  #Gets inputs about state to then search for congress members
   def get_state_input
     puts
     puts "Enter state as two letter state code"
@@ -85,6 +89,7 @@ class CLI
     state
   end
 
+  #Outputs congress member data
   def display_congress_member(member, index = nil)
     puts "#{index} #{member.title} #{member.name},  #{member.party}"
   end
