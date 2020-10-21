@@ -15,22 +15,22 @@ class CLI
     puts "5. Exit"
     puts
     puts "Enter your choice:"
-    input = gets.chomp
+    input = get_input_small
 
-    self.switch_board(input)
+    self.main_switch_board(input)
   end
 
-  def switch_board(input)
+  def main_switch_board(input)
     case input
     when "1"
       self.search_congress_by_location
     when "2"
-      #Find_congress_member_by_name
+      self.find_congress_member_by_name
     when "3"
       #search_legislation_by_issue
     when "4"
       #search_legislation_by_bill
-    when "5"
+    when "5" || "exit"
       puts "Thanks for stopping by!"
       return
     else
@@ -39,22 +39,69 @@ class CLI
     end
   end
 
+  #method will be used to dispaly inforamtion about congressmembers voting and fincanctial records
+  def display_congress_member_info(input, menu_hash)
+    member = menu_hash.find { |key, value| key == input }.last
+    puts "more info on voting record!"
+  end
+
+  #Find conress members based on location, currently only works for states not zipcodes
+  #Then calls display_congress_member to output infor on conress members
   def search_congress_by_location
+    state = self.get_state_input
+    #Find congress members
+    members = CongressMember.all.select { |m| m.state == state }
+    #display info on congress members
+    menu_hash = {}
+    members.each_with_index do |member, index|
+      display_congress_member(member, (index + 1).to_s)
+      #Build out a menu hash to respomnd to the users selection
+      menu_hash[(index + 1).to_s] = member
+    end
+    self.more_info_on_member(menu_hash)
+  end
+
+  def find_congress_member_by_name
+    puts
+    puts "Enter congress member name:"
+    name = get_input_small
+    puts
+    ##### Fix this######
+    member = CongressMember.all.find_by_name(name)
+    display_congress_member(member, index = nil)
+  end
+
+  def get_state_input
     puts
     puts "Enter state as two letter state code"
-    state = gets.chomp.upcase
+    state = get_input_big
     puts
     #Mildly berrate the user for not following instructions
     if state.length > 2
-      puts "#{state} is longer than 2 characters. Get it together"
+      puts "#{state} is longer than 2 characters. Get it together!"
       puts "Try again, but this time with only TWO letters"
-      self.search_congress_by_location
+      self.get_state_input
     end
-    #Find congress members
-    members = CongressMember.all.select { |m| m.state }
-    #display info on congress members
-    members.each do |member|
-      puts "#{member.name}  -  #{member.party}"
-    end
+    state
+  end
+
+  def display_congress_member(member, index = nil)
+    puts "#{index} #{member.title} #{member.name},  #{member.party}"
+  end
+
+  def get_input_big
+    gets.chomp.upcase
+  end
+
+  def get_input_small
+    gets.chomp.downcase
+  end
+
+  #display menu to get more info on members
+  def more_info_on_member(menu_hash)
+    puts
+    puts "Select congress member or type home to return to the main menu"
+    input = get_input_small
+    input == "home" ? self.menu : self.display_congress_member_info(input, menu_hash)
   end
 end
