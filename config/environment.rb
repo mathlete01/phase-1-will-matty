@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "sinatra/activerecord"
+require "colorize"
 Bundler.require
 require_all "lib"
 require_all "app/models"
