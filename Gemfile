@@ -8,3 +8,5 @@ gem "pry"
 gem "sinatra-activerecord"
 gem "require_all"
 gem "rest-client"
+gem 'colorize'
+#gem 'tty'
