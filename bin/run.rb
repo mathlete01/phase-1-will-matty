@@ -1,3 +1,5 @@
-require_relative "../config/environment"
+require_relative '../config/environment'
+require_relative 'api.rb'
 
-puts "HELLO WORLD"
+#binding.pry
+0
