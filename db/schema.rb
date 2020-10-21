@@ -15,7 +15,8 @@ ActiveRecord::Schema.define(version: 2020_10_20_180306) do
   create_table "bills", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.integer "issue_id"
+    t.integer "industry_id"
+    t.string "congress_bill_id"
   end
 
   create_table "congress_members", force: :cascade do |t|
@@ -23,15 +24,16 @@ ActiveRecord::Schema.define(version: 2020_10_20_180306) do
     t.string "party"
     t.string "state"
     t.string "title"
+    t.string "crp_id"
   end
 
   create_table "donations", force: :cascade do |t|
     t.integer "amount"
     t.integer "congress_member_id"
-    t.integer "issue_id"
+    t.integer "industry_id"
   end
 
-  create_table "issues", force: :cascade do |t|
+  create_table "industries", force: :cascade do |t|
     t.string "name"
   end
 
