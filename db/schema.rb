@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_20_180306) do
+ActiveRecord::Schema.define(version: 2020_10_22_220733) do
 
   create_table "bills", force: :cascade do |t|
     t.string "name"
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 2020_10_20_180306) do
   create_table "votes", force: :cascade do |t|
     t.integer "congress_member_id"
     t.integer "bill_id"
-    t.boolean "vote"
+    t.string "position"
   end
 
 end
