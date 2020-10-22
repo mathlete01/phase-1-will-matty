@@ -2,7 +2,18 @@ require "pry"
 
 class CLI
   def initialize
-    puts "Welcome to Politicians and money and stuff"
+    puts "     ___              ___      ___ ________  _________  _______             ___           "
+    puts "    _|\\  \\__          |\\  \\    /  /|\\   __  \\|\\___   ___\\\\  ___ \\          _|\\  \\__      "
+    puts "   |\\   ____\\         \\ \\  \\  /  / | \\  \\|\\  \\|___ \\  \\_\\ \\   __/|        |\\   ____\\     "
+    puts "   \\ \\  \\___|_         \\ \\  \\/  / / \\ \\  \\\\\\  \\   \\ \\  \\ \\ \\  \\_|/__      \\ \\  \\___|_    "
+    puts "    \\ \\_____  \\         \\ \\    / /   \\ \\  \\\\\\  \\   \\ \\  \\ \\ \\  \\_|\\ \\      \\ \\_____  \\    "
+    puts "     \\|____|\\  \\         \\ \\__/ /     \\ \\_______\\   \\ \\__\\ \\ \\_______\\      \\|____|\\  \\   "
+    puts "       ____\\_\\  \\         \\|__|/       \\|_______|    \\|__|  \\|_______|        ____\\_\\  \\  "
+    puts "      |\\___    __\\                                                           |\\___    __\\ "
+    puts "      \\|___|\\__\\_|                                                           \\|___|\\__\\_| "
+    puts "           \\|__|                                                                  \\|__|       "
+
+    puts "\nMoney-Vote Tracker"
     puts "=" * 45
   end
 
@@ -118,7 +129,7 @@ class CLI
     #Catch instances where selected member doesn't exist
     if name.downcase == "exit"
       return
-    elsif name == "back"
+    elsif name == "home"
       self.menu
     elsif !member
       puts "#{name} is not a sitting member of congress. Please try again."
