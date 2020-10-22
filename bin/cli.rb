@@ -13,7 +13,7 @@ class CLI
     puts "-" * 30
     puts "1. Search for congress members by location"
     puts "2. Find congress members by name"
-    puts "3. Search legislation by issue"
+    puts "3. Search legislation by industry"
     puts "4. Exit"
     puts
     puts "Enter your choice:"
@@ -30,7 +30,7 @@ class CLI
     when "2"
       self.find_congress_member_by_name
     when "3"
-      self.search_legislation_by_issue
+      self.industry_donations_menu
     when "5"
       puts "Remember.red to Vote!"
       return
@@ -96,6 +96,7 @@ class CLI
     puts "Select an industry to see how #{member.name} has voted on bills relating to this industry"
     puts 'or type "home" to return to the main menu.'
     input = get_input_small
+    #  self.navigation(input, self.votes_by_industry, industry_hash)
     case input
     when "exit"
       return
@@ -153,16 +154,65 @@ class CLI
     end
   end
 
+  ################### Industry Methods ########################################
+  #displays all industries and their contributions
+
   def votes_by_industry(input, industry_hash)
     industry = industry_hash.find { |index, industry| index == input }.last
     puts "Here we will put info on the members voting record on all bills for a given industry"
     #Make API call for bills realted to in industry.name and display bills with voting records.
   end
 
-  def search_legislation_by_issue
+  def industry_donations_menu
+    puts "\nTop campaign contributing industries and total amount contributed across all capmaigns in last election cycle"
+    industry_hash = {}
+    Industry.all.each_with_index do |industry, index|
+      industry_hash[(index + 1).to_s] = industry
+      donations = industry.donations.map(&:amount).sum
+      donations = self.to_money(donations)
+      puts "#{index + 1}. #{industry.name}, #{donations}"
+    end
+    puts "\n Select industry to see which congress members received contributions"
+    input = get_input_small
+
+    if input == "exit"
+      return
+    elsif input == "home"
+      self.menu
+    else
+      self.get_members_from_industry(input, industry_hash)
+    end
+  end
+
+  def get_members_from_industry(input, industry_hash)
+    industry = industry_hash.find { |index, industry| index == input }.last
+    donations = industry.donations
+    puts "#{industry.name} gave to the following congress members in the last election cycle"
+    puts "-" * 30
+    donations.each_with_index do |donation, index|
+      if donation.congress_member.party == "R"
+        puts "#{index + 1}. #{donation.congress_member.name}, #{to_money(donation.amount)}".red
+      elsif donation.congress_member.party == "D"
+        puts "#{index + 1}. #{donation.congress_member.name}, #{to_money(donation.amount)}".blue
+      else
+        puts "#{index + 1}. #{donation.congress_member.name}, #{to_money(donation.amount)}".red
+      end
+    end
   end
 
   ######################### General Helper Methods ###############
+
+  # def navigation(input, destination, params)
+  #   case input
+  #   when "exit"
+  #     return
+  #   when "home"
+  #     self.menu
+  #   else
+  #     destination(input, params)
+  #   end
+  # end
+
   def get_industries_from_member(member)
     industry_donations = []
     member.donations.each do |donation|
