@@ -3,18 +3,18 @@ require 'json'
 require 'pp'
 require 'pry'
 
-def create_industries(array)
-  array.each do |element|
-    Industry.create(name: element)
-  end
-end
+# def create_industries(array)
+#   array.each do |element|
+#     Industry.create(name: element)
+#   end
+# end
 
-def add_all_bills_for_all_industries(array)
-  #binding.pry
-  array.size.times do |i|
-    create_bills_by_industry(array[i]["name"], array[i]["id"])
-  end
-end
+# def add_all_bills_for_all_industries(array)
+#   #binding.pry
+#   array.size.times do |i|
+#     create_bills_by_industry(array[i]["name"], array[i]["id"])
+#   end
+# end
 
 def create_bills_by_industry(industry, id)
   response_string = RestClient.get("https://api.propublica.org/congress/v1/bills/search.json?query=#{industry}", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
