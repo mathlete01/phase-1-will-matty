@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2020_10_20_180306) do
     t.string "state"
     t.string "title"
     t.string "crp_id"
+    t.string "member_id"
   end
 
   create_table "donations", force: :cascade do |t|

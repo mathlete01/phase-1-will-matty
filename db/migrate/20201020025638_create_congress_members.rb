@@ -6,6 +6,7 @@ class CreateCongressMembers < ActiveRecord::Migration[5.2]
       t.string :state
       t.string :title
       t.string :crp_id
+      t.string :member_id
     end
   end
 end
