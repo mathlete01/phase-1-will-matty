@@ -1,3 +1,5 @@
+require "pry"
+
 class CLI
   def initialize
     puts "Welcome to Politicians and money and stuff"
@@ -80,10 +82,16 @@ class CLI
     self.more_info_on_member(menu_hash)
   end
 
-  #method will be used to dispaly inforamtion about congressmembers voting and fincanctial records
+  #Displays top 10 industries that gave member money and how much
   def display_congress_member_info(input, menu_hash)
     member = menu_hash.find { |key, value| key == input }.last
-    puts "more info on voting record!"
+    puts
+    puts "#{member.name}'s top 10 campaing contributing industries are:"
+    self.get_industries_from_member(member).each_with_index do |donation, index|
+      donation.each do |industry, amount|
+        puts "#{index + 1}. #{industry}, #{amount}"
+      end
+    end
   end
 
   #Finds congress member by name, Not done yet!
@@ -127,6 +135,18 @@ class CLI
   end
 
   ######################### General Helper Methods ###############
+  def get_industries_from_member(member)
+    industry_donations = []
+    member.donations.each do |donation|
+      industry_donations << { donation.industry.name => self.to_money(donation.amount) }
+    end
+    industry_donations
+  end
+
+  def to_money(amount)
+    comas_added = amount.to_s.reverse.scan(/\d{3}|.+/).join(",").reverse
+    "$#{comas_added}"
+  end
 
   def get_input_big
     gets.chomp.upcase
