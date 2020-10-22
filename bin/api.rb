@@ -15,7 +15,6 @@ def create_congress_members
     senator_array.each do |senator|
       puts "• Creating #{senator['last_name']}"
       CongressMember.create(name: "#{senator['first_name']} #{senator['last_name']}", party: senator["party"], state: senator["state"], title: senator["short_title"], crp_id: senator["crp_id"], member_id: senator["id"])
-      #puts "• #{bill["short_title"]}"
     end
   end
 end
@@ -43,18 +42,18 @@ end
 #   # congress #, bill id, vote
 # end
 
-def get_all_votes_by_politician(crp_id)
-  puts "Called!"
-  response_string = RestClient.get("https://api.propublica.org/congress/v1/members/#{crp_id}/votes.json", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
+def get_all_votes_by_politician(member_id)
+
+  response_string = RestClient.get("https://api.propublica.org/congress/v1/members/#{member_id}/votes.json", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
   json = JSON.parse(response_string)
   results = json["results"]
-  #puts "json: #{json}"
-  #puts "Votes: #{results}"
+  votes_array = results[0]["votes"]
+  binding.pry
 end
 
 def get_random_senator
   rando_senator = CongressMember.all[rand(5)]
-  #get_all_votes_by_politician(rando_senator.crp_id)
+  get_all_votes_by_politician(rando_senator.member_id)
   puts "-" * 30
   rando_donation = rand(10)
   amount = rando_senator.donations[rando_donation].amount
@@ -67,6 +66,6 @@ def get_random_senator
   puts "-" * 30
 end
 
-#get_random_senator
+get_random_senator
 
 #binding.pry
