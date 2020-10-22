@@ -84,13 +84,28 @@ class CLI
 
   #Displays top 10 industries that gave member money and how much
   def display_congress_member_info(input, menu_hash)
+    industry_hash = {}
     member = menu_hash.find { |key, value| key == input }.last
     puts
     puts "#{member.name}'s top 10 campaing contributing industries are:"
+    puts "-" * 45
     self.get_industries_from_member(member).each_with_index do |donation, index|
       donation.each do |industry, amount|
-        puts "#{index + 1}. #{industry}, #{amount}"
+        industry_hash[(index + 1).to_s] = industry
+        puts "#{index + 1}. #{industry.name}, #{amount}"
       end
+    end
+    puts
+    puts "Select an industry to see how #{member.name} has voted on bills relating to this industry"
+    puts 'or type "home" to return to the main menu or "back" to go back.'
+    input = get_input_small
+    case input
+    when "exit"
+      return
+    when "back"
+      #Got back to senators page
+    else
+      self.votes_by_industry(input, industry_hash)
     end
   end
 
@@ -109,7 +124,11 @@ class CLI
       puts "#{name} is not a sitting member of congress. Please try again."
       self.find_congress_member_by_name
     else
-      display_congress_member(member, index = nil)
+      #Becuase we are only returning one Congress memeber index = 1
+      index = "1"
+      self.display_congress_member(member, index)
+      menu_hash = { index => member }
+      self.more_info_on_member(menu_hash)
     end
   end
 
@@ -123,7 +142,7 @@ class CLI
 
   #Outputs congress member data
   def display_congress_member(member, index = nil)
-    info = "#{index} #{member.title} #{member.name},  #{member.party}"
+    info = "#{index}. #{member.title} #{member.name},  #{member.party}"
     case member.party
     when "D"
       puts info.blue
@@ -134,11 +153,18 @@ class CLI
     end
   end
 
+  def votes_by_industry(input, industry_hash)
+    industry = industry_hash.find { |index, industry| index == input }.last
+    binding.pry
+    puts "Here we will put info on the members voting record on all bills for a given industry"
+    #Make API call for bills realted to in industry.name and display bills with voting records.
+  end
+
   ######################### General Helper Methods ###############
   def get_industries_from_member(member)
     industry_donations = []
     member.donations.each do |donation|
-      industry_donations << { donation.industry.name => self.to_money(donation.amount) }
+      industry_donations << { donation.industry => self.to_money(donation.amount) }
     end
     industry_donations
   end
