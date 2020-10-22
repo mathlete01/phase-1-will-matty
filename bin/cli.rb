@@ -14,8 +14,7 @@ class CLI
     puts "1. Search for congress members by location"
     puts "2. Find congress members by name"
     puts "3. Search legislation by issue"
-    puts "4. Search legislation by bill name"
-    puts "5. Exit"
+    puts "4. Exit"
     puts
     puts "Enter your choice:"
     input = get_input_small
@@ -31,11 +30,9 @@ class CLI
     when "2"
       self.find_congress_member_by_name
     when "3"
-      #search_legislation_by_issue
-    when "4"
-      #search_legislation_by_bill
+      self.search_legislation_by_issue
     when "5"
-      puts "Remember to Vote!"
+      puts "Remember.red to Vote!"
       return
     when "exit"
       puts "Remember to Vote!"
@@ -87,7 +84,7 @@ class CLI
     industry_hash = {}
     member = menu_hash.find { |key, value| key == input }.last
     puts
-    puts "#{member.name}'s top 10 campaing contributing industries are:"
+    puts "#{member.name}'s top 10 campain contributing industries are:"
     puts "-" * 45
     self.get_industries_from_member(member).each_with_index do |donation, index|
       donation.each do |industry, amount|
@@ -97,29 +94,32 @@ class CLI
     end
     puts
     puts "Select an industry to see how #{member.name} has voted on bills relating to this industry"
-    puts 'or type "home" to return to the main menu or "back" to go back.'
+    puts 'or type "home" to return to the main menu.'
     input = get_input_small
     case input
     when "exit"
       return
-    when "back"
-      #Got back to senators page
+    when "home"
+      self.menu
     else
       self.votes_by_industry(input, industry_hash)
     end
   end
 
-  #Finds congress member by name, Not done yet!
+  #Finds congress member by name
   def find_congress_member_by_name
     puts
     puts "Enter congress member name:"
     name = gets.chomp
     puts
     ##### Fix this######
-    member = CongressMember.find_by_name(name)
+    formatted_name = name.split.map(&:capitalize).join(" ")
+    member = CongressMember.find_by_name(formatted_name)
     #Catch instances where selected member doesn't exist
     if name.downcase == "exit"
       return
+    elsif name == "back"
+      self.menu
     elsif !member
       puts "#{name} is not a sitting member of congress. Please try again."
       self.find_congress_member_by_name
@@ -155,9 +155,11 @@ class CLI
 
   def votes_by_industry(input, industry_hash)
     industry = industry_hash.find { |index, industry| index == input }.last
-    binding.pry
     puts "Here we will put info on the members voting record on all bills for a given industry"
     #Make API call for bills realted to in industry.name and display bills with voting records.
+  end
+
+  def search_legislation_by_issue
   end
 
   ######################### General Helper Methods ###############
