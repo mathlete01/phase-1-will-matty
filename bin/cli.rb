@@ -2,7 +2,18 @@ require "pry"
 
 class CLI
   def initialize
-    puts "Welcome to Politicians and money and stuff"
+    puts "     ___              ___      ___ ________  _________  _______             ___           "
+    puts "    _|\\  \\__          |\\  \\    /  /|\\   __  \\|\\___   ___\\\\  ___ \\          _|\\  \\__      "
+    puts "   |\\   ____\\         \\ \\  \\  /  / | \\  \\|\\  \\|___ \\  \\_\\ \\   __/|        |\\   ____\\     "
+    puts "   \\ \\  \\___|_         \\ \\  \\/  / / \\ \\  \\\\\\  \\   \\ \\  \\ \\ \\  \\_|/__      \\ \\  \\___|_    "
+    puts "    \\ \\_____  \\         \\ \\    / /   \\ \\  \\\\\\  \\   \\ \\  \\ \\ \\  \\_|\\ \\      \\ \\_____  \\    "
+    puts "     \\|____|\\  \\         \\ \\__/ /     \\ \\_______\\   \\ \\__\\ \\ \\_______\\      \\|____|\\  \\   "
+    puts "       ____\\_\\  \\         \\|__|/       \\|_______|    \\|__|  \\|_______|        ____\\_\\  \\  "
+    puts "      |\\___    __\\                                                           |\\___    __\\ "
+    puts "      \\|___|\\__\\_|                                                           \\|___|\\__\\_| "
+    puts "           \\|__|                                                                  \\|__|       "
+
+    puts "\nMoney-Vote Tracker"
     puts "=" * 45
   end
 
@@ -35,8 +46,7 @@ class CLI
       puts "Remember.red to Vote!"
       return
     when "exit"
-      puts "Remember to Vote!"
-      return
+      self.exit
     else
       puts "#{input} is not a valid option "
       self.menu
@@ -83,7 +93,6 @@ class CLI
   def display_congress_member_info(input, menu_hash)
     industry_hash = {}
     member = menu_hash.find { |key, value| key == input }.last
-    get_all_votes_by_politician(member)
     puts "#{member.name}'s top 10 campain contributing industries are:"
     puts "-" * 45
     self.get_industries_from_member(member).each_with_index do |donation, index|
@@ -96,15 +105,17 @@ class CLI
     puts "Select an industry to see how #{member.name} has voted on bills relating to this industry"
     puts 'or type "home" to return to the main menu.'
     input = get_input_small
-    #  self.navigation(input, self.votes_by_industry, industry_hash)
     case input
     when "exit"
       return
     when "home"
       self.menu
     else
+      binding.pry
+      get_all_votes_by_politician(member)
       industry_choice = industry_hash[input]
-      self.votes_by_industry(industry_choice)
+      create_bills_by_industry(industry_choice)
+      self.votes_by_industry(member, industry_choice)
     end
   end
 
@@ -120,7 +131,7 @@ class CLI
     #Catch instances where selected member doesn't exist
     if name.downcase == "exit"
       return
-    elsif name == "back"
+    elsif name == "home"
       self.menu
     elsif !member
       puts "#{name} is not a sitting member of congress. Please try again."
@@ -158,18 +169,6 @@ class CLI
   ################### Industry Methods ########################################
   #displays all industries and their contributions
 
-  def votes_by_industry(industry_obj)
-    create_bills_by_industry(industry_obj)
-    #Make API call for bills realted to in industry.name and display bills with voting records.
-  end
-
-  # def votes_by_industry(input, industry_hash)
-  #   industry = industry_hash.find { |index, industry| index == input }.last
-  #   puts "Here we will put info on the members voting record on all bills for a given industry"
-  #   binding.pry
-  #   #Make API call for bills realted to in industry.name and display bills with voting records.
-  # end
-
   def industry_donations_menu
     puts "\nTop campaign contributing industries and total amount contributed across all capmaigns in last election cycle"
     industry_hash = {}
@@ -177,13 +176,14 @@ class CLI
       industry_hash[(index + 1).to_s] = industry
       donations = industry.donations.map(&:amount).sum
       donations = self.to_money(donations)
-      puts "#{index + 1}. #{industry.name}, #{donations}"
+      puts "#{"#{index + 1}.".bold} #{industry.name}, #{donations}"
     end
     puts "\n Select industry to see which congress members received contributions"
     input = get_input_small
 
+    # self.navigation(input, :get_members_from_industry, industry_hash)
     if input == "exit"
-      return
+      self.exit
     elsif input == "home"
       self.menu
     else
@@ -194,20 +194,41 @@ class CLI
   def get_members_from_industry(input, industry_hash)
     industry = industry_hash.find { |index, industry| index == input }.last
     donations = industry.donations
-    puts "#{industry.name} gave to the following congress members in the last election cycle"
+    puts "\n\n#{industry.name} gave to the following congress members in the last election cycle"
     puts "-" * 30
     donations.each_with_index do |donation, index|
+      info = "#{index + 1}. #{donation.congress_member.name}, #{donation.congress_member.party}, #{to_money(donation.amount)}"
+
       if donation.congress_member.party == "R"
-        puts "#{index + 1}. #{donation.congress_member.name}, #{to_money(donation.amount)}".red
+        puts info.red
       elsif donation.congress_member.party == "D"
-        puts "#{index + 1}. #{donation.congress_member.name}, #{to_money(donation.amount)}".blue
+        puts info.blue
       else
-        puts "#{index + 1}. #{donation.congress_member.name}, #{to_money(donation.amount)}".red
+        puts info
       end
+    end
+    puts "\n\n Select a Congress  Memeber to see how they voted on bills related to #{industry.name}"
+    input = get_input_small
+
+    if input == "exit"
+      self.exit
+    elsif input == "home"
+      self.menu
+    else
+      puts "See all the votes!!!"
+      #votes_by_congress_memeber(input, industry_hash)
     end
   end
 
+  ##################### VOTE Methods ###############################
+
+  def self.votes_by_industry(member, industry_choice)
+    puts member.bills
+  end
+
   ######################### General Helper Methods ###############
+
+  #Currently not working come back and fix this to DRY out code if time permits
 
   # def navigation(input, destination, params)
   #   case input
@@ -216,7 +237,8 @@ class CLI
   #   when "home"
   #     self.menu
   #   else
-  #     destination(input, params)
+  #     binding.pry
+  #     method(destination(input, params)).call
   #   end
   # end
 
@@ -239,5 +261,10 @@ class CLI
 
   def get_input_small
     gets.chomp.downcase
+  end
+
+  def exit
+    puts "#{"Remember".red} #{"to".white.on_black} #{"Vote".blue}!".bold
+    return
   end
 end
