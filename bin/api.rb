@@ -19,19 +19,16 @@ def create_congress_members
   end
 end
 
-def create_bills_by_industry(industry, id)
-  response_string = RestClient.get("https://api.propublica.org/congress/v1/bills/search.json?query=#{industry}", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
+def create_bills_by_industry(industry_obj)
+  response_string = RestClient.get("https://api.propublica.org/congress/v1/bills/search.json?query=#{industry_obj.name}", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
   json = JSON.parse(response_string)
   results = json["results"]
   bills_array = results[0]["bills"]
-  #puts bills_array.length
   bills_array.each do |bill|
-    Bill.create(name: bill["short_title"], description: bill["title"], industry_id: id, congress_bill_id: bill["bill_id"])
+    Bill.create(name: bill["short_title"], description: bill["title"], industry_id: industry_obj.id, congress_bill_id: bill["bill_id"])
     #create_vote_for_bill(bill["bill_id"])
     puts "• #{bill["short_title"]}"
-    #binding.pry
   end
-  #start
 end
 
 # def create_vote_for_bill(congress_bill_id)
@@ -42,13 +39,14 @@ end
 #   # congress #, bill id, vote
 # end
 
-def get_all_votes_by_politician(member_id)
-
-  response_string = RestClient.get("https://api.propublica.org/congress/v1/members/#{member_id}/votes.json", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
+def get_all_votes_by_politician(cm_obj)
+  response_string = RestClient.get("https://api.propublica.org/congress/v1/members/#{cm_obj.member_id}/votes.json", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
   json = JSON.parse(response_string)
   results = json["results"]
   votes_array = results[0]["votes"]
-  binding.pry
+  votes_array.each do |vote|
+    Vote.create(congress_member_id: cm_obj.member_id, bill_id: vote["bill"]["bill_id"], vote: vote["bill"]["position"])
+  end
 end
 
 def get_random_senator
@@ -66,6 +64,6 @@ def get_random_senator
   puts "-" * 30
 end
 
-get_random_senator
+#get_random_senator
 
 #binding.pry

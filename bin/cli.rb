@@ -83,7 +83,7 @@ class CLI
   def display_congress_member_info(input, menu_hash)
     industry_hash = {}
     member = menu_hash.find { |key, value| key == input }.last
-    puts
+    get_all_votes_by_politician(member)
     puts "#{member.name}'s top 10 campain contributing industries are:"
     puts "-" * 45
     self.get_industries_from_member(member).each_with_index do |donation, index|
@@ -103,7 +103,8 @@ class CLI
     when "home"
       self.menu
     else
-      self.votes_by_industry(input, industry_hash)
+      industry_choice = industry_hash[input]
+      self.votes_by_industry(industry_choice)
     end
   end
 
@@ -157,11 +158,17 @@ class CLI
   ################### Industry Methods ########################################
   #displays all industries and their contributions
 
-  def votes_by_industry(input, industry_hash)
-    industry = industry_hash.find { |index, industry| index == input }.last
-    puts "Here we will put info on the members voting record on all bills for a given industry"
+  def votes_by_industry(industry_obj)
+    create_bills_by_industry(industry_obj)
     #Make API call for bills realted to in industry.name and display bills with voting records.
   end
+
+  # def votes_by_industry(input, industry_hash)
+  #   industry = industry_hash.find { |index, industry| index == input }.last
+  #   puts "Here we will put info on the members voting record on all bills for a given industry"
+  #   binding.pry
+  #   #Make API call for bills realted to in industry.name and display bills with voting records.
+  # end
 
   def industry_donations_menu
     puts "\nTop campaign contributing industries and total amount contributed across all capmaigns in last election cycle"
