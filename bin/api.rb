@@ -52,14 +52,8 @@ def get_all_votes_by_politician(cm_obj)
     #binding.pry
     votes_array = results[0]["votes"]
     votes_array.each do |vote|
-<<<<<<< HEAD
       #qbinding.pry
       Vote.create(congress_member: cm_obj, bill_id: vote["bill"]["bill_id"], position: vote["position"])
-=======
-      bill = Bill.find_by(congress_bill_id: vote["bill"]["bill_id"])
-      #binding.pry
-      Vote.create(congress_member: cm_obj, bill_id: bill, position: vote["position"])
->>>>>>> final_work
     end
   end
 end
