@@ -13,7 +13,7 @@ class CLI
     puts "      \\|___|\\__\\_|                                                           \\|___|\\__\\_| "
     puts "           \\|__|                                                                  \\|__|       "
 
-    puts "\nMoney-Vote Tracker"
+    puts "\nSenate-Vote Tracker"
     puts "=" * 45
   end
 

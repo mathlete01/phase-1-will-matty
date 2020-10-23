@@ -2,7 +2,7 @@ require "faraday"
 require "json"
 require "pry"
 
-#Get infos
+#Get finances and industries from Open secrets
 def query_for_finances
   base = "http://www.opensecrets.org/api"
   key = "53b8248b9eacc45c011fca9185cf6957" # Will's
