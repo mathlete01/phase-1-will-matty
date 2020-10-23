@@ -1,6 +1,6 @@
 # Senate Money Tracker
 
-Senate Money Tracker is a lightweight, Ruby, CLI application that quickly connectes senators with the top ten industries that have proivded them the lagest campaign contributions over the previous election cycle. All data provided by https://www.opensecrets.org/, and https://www.propublica.org/
+Senate Money Tracker is a lightweight Ruby CLI application that quickly illumiates the relationship between senators and the industries that fund their re-election campaigns. All data provided by https://www.opensecrets.org/, and https://www.propublica.org/
 
 ## Tutorial
 
