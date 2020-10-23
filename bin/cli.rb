@@ -24,7 +24,6 @@ class CLI
     puts "                                                          "
     puts "...see how they're connected"
     puts ""
-    puts ""
   end
 
   #Main menu would be nice to add some ascii
@@ -38,7 +37,7 @@ class CLI
     puts "3. Start with an INDUSTRY"
     puts "4. EXIT"
     puts
-    puts ">>> Enter your choice:"
+    puts ">>> Enter your choice"
     input = get_input_small
 
     self.main_switch_board(input)
@@ -66,7 +65,7 @@ class CLI
   #Gets inputs about state to then search for congress members
   def get_state_input
     puts
-    puts ">>> Enter state as two-letter abbreviation"
+    puts ">>> Enter STATE as two-letter abbreviation"
     state = get_input_big
     puts
     #Mildly berrate the user for not following instructions
@@ -120,7 +119,7 @@ class CLI
       end
     end
     puts
-    puts ">>> Select an industry above to see the senators it donated the most to"
+    puts ">>> Select an INDUSTRY above to see the senators it donated the most to"
     puts '(type "home" to return to the Main Menu)'
     input = get_input_small
     case input
@@ -141,7 +140,7 @@ class CLI
   #Finds congress member by name
   def find_congress_member_by_name
     puts
-    puts ">>> Enter senator's full name:"
+    puts ">>> Enter senator's FULL NAME:"
     name = gets.chomp
     puts
     ##### Fix this######
@@ -168,7 +167,7 @@ class CLI
 
   def more_info_on_member(menu_hash)
     puts
-    puts ">>> Select a senator above to see their top contributors by industry"
+    puts ">>> Select a SENATOR above to see their top contributors by industry"
     puts '(type "home" to return to the Main Menu)'
     input = get_input_small
     if input == "exit"
@@ -212,7 +211,7 @@ class CLI
   end
 
   def industry_donation_menu_selection(industry_hash)
-    puts "\n >>> Select industry to see which senators received contributions"
+    puts "\n >>> Select an INDUSTRY above to see how much they contributed to senators's re-election campaigns'"
     input = get_input_small
 
     # self.navigation(input, :get_members_from_industry, industry_hash)
@@ -253,7 +252,7 @@ class CLI
   end
 
   def member_select(menu_hash)
-    puts "\n>>> Select a senator above to see their top contributors by industry"
+    puts "\n>>> Select a SENATOR above to see their top contributors by industry"
     puts '(type "home" to return to the Main Menu)'
     input = get_input_small
 
