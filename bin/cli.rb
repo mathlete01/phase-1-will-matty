@@ -52,6 +52,8 @@ class CLI
       self.find_congress_member_by_name
     when "3"
       self.industry_donations_menu
+    when "4"
+      self.exit
     when "exit"
       self.exit
     else
@@ -109,12 +111,13 @@ class CLI
       puts "Senator #{member.name.blue}'s top contributers by industry are:"
     elsif member.party == "R"
       puts "Senator #{member.name.red}'s top contributers by industry are:"
+    else
+      puts "Senator #{member.name.yellow}'s top contributers by industry are:"
     end
     puts "-" * 60
     self.get_industries_from_member(member).each_with_index do |donation, index|
       donation.each do |industry, amount|
         industry_hash[(index + 1).to_s] = industry
-        #puts "#{index + 1}. #{industry.name}, #{amount}"
         puts "#{index + 1}. #{amount}...#{industry.name}"
       end
     end
@@ -124,7 +127,7 @@ class CLI
     input = get_input_small
     case input
     when "exit"
-      return
+      self.exit
     when "home"
       self.menu
     else
@@ -143,7 +146,6 @@ class CLI
     puts ">>> Enter senator's FULL NAME:"
     name = gets.chomp
     puts
-    ##### Fix this######
     formatted_name = name.split.map(&:capitalize).join(" ")
     member = CongressMember.find_by_name(formatted_name)
     #Catch instances where selected member doesn't exist
@@ -191,7 +193,7 @@ class CLI
     when "R"
       puts info.red
     else
-      puts info
+      puts info.yellow
     end
   end
 
@@ -245,7 +247,7 @@ class CLI
       elsif donation.congress_member.party == "D"
         puts info.blue
       else
-        puts info
+        puts info.yellow
       end
     end
     self.member_select(menu_hash)
