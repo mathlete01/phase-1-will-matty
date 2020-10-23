@@ -2,6 +2,7 @@ require "pry"
 
 class CLI
   def initialize
+    clear
     puts "                                                         "
     puts "                                                       "
     puts "                                                  __     "
@@ -28,7 +29,6 @@ class CLI
 
   #Main menu would be nice to add some ascii
   def menu
-    puts
     puts "-" * 60
     puts "Menu"
     puts "-" * 60
@@ -73,19 +73,21 @@ class CLI
     state
   end
 
-  #Find congress members based on location, currently only works for states not zipcodes
+  #Find conress members based on location, currently only works for states not zipcodes
   #Then calls display_congress_member to output infor on conress members
-  def search_congress_by_location
+  def search_congress_by_location(error = nil)
+    clear
+    puts error
     state = self.get_state_input
     #find congress members
     members = CongressMember.all.select { |m| m.state == state }
     if state.downcase == "exit"
       self.exit
-    elsif state == "home"
+    elsif state.downcase == "home"
       self.menu
-    elsif !members
-      puts "Sorry, #{name} is not a sitting member of the senate. Please try again."
-      self.find_congress_member_by_name
+    elsif members.empty?
+      error = "Sorry, #{state} is not a not a valid state code. Please try again."
+      self.search_congress_by_location(error)
     else
       #display info on congress members
       menu_hash = {}
@@ -101,15 +103,16 @@ class CLI
 
   #Displays top 10 industries that gave member money and how much
   def display_congress_member_info(input, menu_hash)
+    clear
     industry_hash = {}
     member = menu_hash.find { |key, value| key == input }.last
     puts "-" * 60
     if member.party == "D"
-      puts "Senator #{member.name.blue}'s top contributers by industry are:"
+      puts "Senator #{member.name.blue}'s top contributors by industry are:"
     elsif member.party == "R"
-      puts "Senator #{member.name.red}'s top contributers by industry are:"
+      puts "Senator #{member.name.red}'s top contributors by industry are:"
     else
-      puts "Senator #{member.name.yellow}'s top contributers by industry are:"
+      puts "Senator #{member.name.yellow}'s top contributors by industry are:"
     end
     puts "-" * 60
     self.get_industries_from_member(member).each_with_index do |donation, index|
@@ -129,23 +132,20 @@ class CLI
     if input == "exit"
       self.exit
     elsif input == "home"
+      clear
       self.menu
     elsif !(1..industry_hash.length).to_a.include?(input.to_i)
       puts "Sorry, #{input} is not a valid option. Please try again."
       self.select_industry_from_congress_member(industry_hash)
     else
       self.get_members_from_industry(input, industry_hash)
-      # For future development reasons
-      # industry_choice = industry_hash[input]
-      # create_bills_by_industry(industry_choice)
-      # get_all_votes_by_politician(member)
-      # self.votes_by_industry(member, industry_choice)
     end
   end
 
   #Finds congress member by name
-  def find_congress_member_by_name
-    puts
+  def find_congress_member_by_name(error = nil)
+    clear
+    puts error
     puts ">>> Enter senator's FULL NAME:"
     name = gets.chomp
     puts
@@ -155,10 +155,11 @@ class CLI
     if name.downcase == "exit"
       self.exit
     elsif name == "home"
+      clear
       self.menu
     elsif !member
-      puts "Sorry, #{name} is not a sitting member of the senate. Please try again."
-      self.find_congress_member_by_name
+      error = "Sorry, #{name} is not a sitting member of the senate. Please try again."
+      self.find_congress_member_by_name(error)
     else
       #Becuase we are only returning one Congress memeber index = 1
       index = "1"
@@ -178,6 +179,7 @@ class CLI
     if input == "exit"
       self.exit
     elsif input == "home"
+      clear
       self.menu
     elsif !(1..menu_hash.length).to_a.include?(input.to_i)
       puts "Sorry, #{input} is not a valid option. Please try again."
@@ -189,6 +191,7 @@ class CLI
 
   #Outputs congress member data
   def display_congress_member(member, index = nil)
+    #clear
     info = "#{index}. #{member.title} #{member.name}, #{member.party}–#{member.state}"
     case member.party
     when "D"
@@ -205,6 +208,7 @@ class CLI
 
   def industry_donations_menu
     puts "\nTop campaign contributing industries and total amount contributed across all capmaigns in last election cycle"
+    clear
     industry_hash = {}
     Industry.all.each_with_index do |industry, index|
       industry_hash[(index + 1).to_s] = industry
@@ -223,6 +227,7 @@ class CLI
     if input == "exit"
       self.exit
     elsif input == "home"
+      clear
       self.menu
     elsif !(1..industry_hash.length).to_a.include?(input.to_i)
       puts "Sorry, #{input} is not a valid option. Please try again."
@@ -234,6 +239,7 @@ class CLI
 
   # Lists all congress members that an industry has donated to
   def get_members_from_industry(input, industry_hash)
+    clear
     industry = industry_hash.find { |index, industry| index == input }.last
     donations = industry.donations
     puts "-" * 60
@@ -264,6 +270,7 @@ class CLI
     if input == "exit"
       self.exit
     elsif input == "home"
+      clear
       self.menu
     elsif !(1..menu_hash.length).to_a.include?(input.to_i)
       puts "Sorry, #{input} is not a valid option. Please try again."
@@ -296,7 +303,35 @@ class CLI
     gets.chomp.downcase
   end
 
+  #clears out comand line
+  def clear
+    if Gem.win_platform?
+      system "cls"
+    else
+      system "clear"
+    end
+  end
+
   def exit
+    clear
+    puts " ______  __                       __                     ___               "
+    puts "/\\__  _\\/\\ \\                     /\\ \\                  /'___\\              "
+    puts "\\/_/\\ \\/\\ \\ \\___      __      ___\\ \\ \\/'\\     ____    /\\ \\__/  ___   _ __  "
+    puts "   \\ \\ \\ \\ \\  _ `\\  /'__`\\  /' _ `\\ \\ , <    /',__\\   \\ \\ ,__\\/ __`\\/\\`'__\\"
+    puts "    \\ \\ \\ \\ \\ \\ \\ \\/\\ \\L\\.\\_/\\ \\/\\ \\ \\ \\\\`\\ /\\__, `\\   \\ \\ \\_/\\ \\L\\ \\ \\ \\/ "
+    puts "     \\ \\_\\ \\ \\_\\ \\_\\ \\__/.\\_\\ \\_\\ \\_\\ \\_\\ \\_\\/\\____/    \\ \\_\\\\ \\____/\\ \\_\\ "
+    puts "      \\/_/  \\/_/\\/_/\\/__/\\/_/\\/_/\\/_/\\/_/\\/_/\\/___/      \\/_/ \\/___/  \\/_/ "
+    puts "                                                                           "
+    puts "                                                                           "
+    puts "       ___                                         __     "
+    puts "      /\\_ \\                     __                /\\ \\    "
+    puts " _____\\//\\ \\      __     __  __/\\_\\    ___      __\\ \\ \\   "
+    puts "/\\ '__`\\\\ \\ \\   /'__`\\  /\\ \\/\\ \\/\\ \\ /' _ `\\  /'_ `\\ \\ \\  "
+    puts "\\ \\ \\L\\ \\\\_\\ \\_/\\ \\L\\.\\_\\ \\ \\_\\ \\ \\ \\/\\ \\/\\ \\/\\ \\L\\ \\ \\_\\ "
+    puts " \\ \\ ,__//\\____\\ \\__/.\\_\\\\/`____ \\ \\_\\ \\_\\ \\_\\ \\____ \\/\\_\\"
+    puts "  \\ \\ \\/ \\/____/\\/__/\\/_/ `/___/> \\/_/\\/_/\\/_/\\/___L\\ \\/_/"
+    puts "   \\ \\_\\                     /\\___/             /\\____/   "
+    puts "    \\/_/                     \\/__/              \\_/__/    "
     puts "#{"Thanks".red} #{"for".white} #{"playing".blue}, #{"and".white} #{"remember".red} #{"to".white} #{"Vote".blue}#{"!".white}"
     return
   end
