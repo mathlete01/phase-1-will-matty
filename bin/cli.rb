@@ -178,8 +178,6 @@ class CLI
     end
   end
 
-
-
   ################### Industry Methods ########################################
   #displays all industries and their contributions
 
@@ -255,8 +253,6 @@ class CLI
 
   #Fill in with sweet sweet code when we have data for votes and bills
 
-
-
   ######################### General Helper Methods ###############
 
   #Currently not working come back and fix this to DRY out code if time permits
@@ -295,15 +291,9 @@ class CLI
   end
 
   def exit
-<<<<<<< HEAD
-    puts "#{"Remember".red} #{"to".white.on_black} #{"Vote".blue}!".bold
-    Vote.delete_all
-    Bill.delete_all
-=======
     Vote.destroy_all
     Bill.destroy_all
     puts "#{"Remember".red} #{"to".white.on_black} #{"Vote".blue}!".on_black.bold
->>>>>>> final_work
     return
   end
 end
