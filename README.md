@@ -1,8 +1,10 @@
 # Money & Politics
 
-SSenate Money Tracker is a lightweight Ruby CLI application that quickly illumiates the relationship between senators and the industries that fund their re-election campaigns. All data provided by https://www.opensecrets.org/, and https://www.propublica.org/
+Money + Politics is a lightweight Ruby CLI application that quickly illumiates the relationship between senators and the industries that fund their re-election campaigns. All data provided by https://www.opensecrets.org, and https://www.propublica.org/
 
 ## Tutorial
+
+https://youtu.be/zuRnWOy6Pyo
 
 ## Installation
 
