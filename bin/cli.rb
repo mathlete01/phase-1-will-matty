@@ -112,20 +112,12 @@ class CLI
     when "home"
       self.menu
     else
-<<<<<<< HEAD
-      #binding.pry
-      get_all_votes_by_politician(member)
-      industry_choice = industry_hash[input]
-      create_bills_by_industry(industry_choice)
-      self.votes_by_industry(member, industry_choice)
-=======
       self.get_members_from_industry(input, industry_hash)
       # For future development reasons
       # industry_choice = industry_hash[input]
       # create_bills_by_industry(industry_choice)
       # get_all_votes_by_politician(member)
       # self.votes_by_industry(member, industry_choice)
->>>>>>> final_work
     end
   end
 
