@@ -5,7 +5,7 @@ require "pry"
 #Get infos
 def query_for_finances
   base = "http://www.opensecrets.org/api"
-  key = "40dca1f69a36b95c944aad4672acbc2b" # Will's
+  key = "53b8248b9eacc45c011fca9185cf6957" # Will's
   #key = "7e27e1f20d4c696e6374ae2d45e3a033" # Matty's
   header = {
     "X-API-Key" => key,
