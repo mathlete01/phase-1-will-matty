@@ -2,21 +2,6 @@ require "pry"
 
 class CLI
   def initialize
-<<<<<<< HEAD
-    puts "     ___              ___      ___ ________  _________  _______             ___           "
-    puts "    _|\\  \\__          |\\  \\    /  /|\\   __  \\|\\___   ___\\\\  ___ \\          _|\\  \\__      "
-    puts "   |\\   ____\\         \\ \\  \\  /  / | \\  \\|\\  \\|___ \\  \\_\\ \\   __/|        |\\   ____\\     "
-    puts "   \\ \\  \\___|_         \\ \\  \\/  / / \\ \\  \\\\\\  \\   \\ \\  \\ \\ \\  \\_|/__      \\ \\  \\___|_    "
-    puts "    \\ \\_____  \\         \\ \\    / /   \\ \\  \\\\\\  \\   \\ \\  \\ \\ \\  \\_|\\ \\      \\ \\_____  \\    "
-    puts "     \\|____|\\  \\         \\ \\__/ /     \\ \\_______\\   \\ \\__\\ \\ \\_______\\      \\|____|\\  \\   "
-    puts "       ____\\_\\  \\         \\|__|/       \\|_______|    \\|__|  \\|_______|        ____\\_\\  \\  "
-    puts "      |\\___    __\\                                                           |\\___    __\\ "
-    puts "      \\|___|\\__\\_|                                                           \\|___|\\__\\_| "
-    puts "           \\|__|                                                                  \\|__|       "
-
-    puts "\nSenate-Vote Tracker"
-    puts "=" * 45
-=======
     puts "                                                         "
     puts "                                                       "
     puts "                                                  __     "
@@ -39,7 +24,6 @@ class CLI
     puts "                                                          "
     puts "...see how they're connected"
     puts ""
->>>>>>> f76cc3d6b5f23a93dbf41cc9d8aee5110e815e3d
   end
 
   #Main menu would be nice to add some ascii
@@ -121,7 +105,7 @@ class CLI
     industry_hash = {}
     member = menu_hash.find { |key, value| key == input }.last
     puts "-" * 60
-    if member.party == "D" 
+    if member.party == "D"
       puts "Senator #{member.name.blue}'s top contributers by industry are:"
     elsif member.party == "R"
       puts "Senator #{member.name.red}'s top contributers by industry are:"
@@ -327,7 +311,7 @@ class CLI
 
   def exit
     Vote.destroy_all
-    Bill.destroy_all 
+    Bill.destroy_all
     puts "#{"Thanks".red} #{"for".white} #{"playing".blue}, #{"and".white} #{"remember".red} #{"to".white} #{"Vote".blue}#{"!".white}"
     return
   end
