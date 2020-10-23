@@ -332,7 +332,7 @@ class CLI
     puts "  \\ \\ \\/ \\/____/\\/__/\\/_/ `/___/> \\/_/\\/_/\\/_/\\/___L\\ \\/_/"
     puts "   \\ \\_\\                     /\\___/             /\\____/   "
     puts "    \\/_/                     \\/__/              \\_/__/    "
-    puts "#{"Thanks".red} #{"for".white} #{"playing".blue}, #{"and".white} #{"remember".red} #{"to".white} #{"Vote".blue}#{"!".white}"
+    puts "\n#{"Thanks".red} #{"for".white} #{"playing".blue}, #{"and".white} #{"remember".red} #{"to".white} #{"Vote".blue}#{"!".white}"
     return
   end
 end
