@@ -20,6 +20,7 @@ def create_congress_members
 end
 
 def create_bills_by_industry(industry_obj)
+  puts "CALLED: Create Bills By Industry"
   if industry_obj.bills.empty?
     response_string = RestClient.get("https://api.propublica.org/congress/v1/bills/search.json?query=#{industry_obj.name}", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
     json = JSON.parse(response_string)
@@ -28,7 +29,7 @@ def create_bills_by_industry(industry_obj)
     bills_array.each do |bill|
       Bill.create(name: bill["short_title"], description: bill["title"], industry_id: industry_obj.id, congress_bill_id: bill["bill_id"])
       #create_vote_for_bill(bill["bill_id"])
-      puts "• #{bill["short_title"]}"
+      #puts "• #{bill["short_title"]}"
     end
   end
 end
@@ -42,13 +43,15 @@ end
 # end
 
 def get_all_votes_by_politician(cm_obj)
+  puts "CALLED: Get All Votes By Politician"
   if cm_obj.votes.empty?
     response_string = RestClient.get("https://api.propublica.org/congress/v1/members/#{cm_obj.member_id}/votes.json", { "X-API-Key" => 'VjRSqQm09s5VuHJUcSFHHk2I33KcrmWnqbTCExQB' })
     json = JSON.parse(response_string)
     results = json["results"]
     votes_array = results[0]["votes"]
     votes_array.each do |vote|
-      Vote.create(congress_member_id: cm_obj.member_id, bill_id: vote["bill"]["bill_id"], position: vote["bill"]["position"])
+      #qbinding.pry
+      Vote.create(congress_member: cm_obj, bill_id: vote["bill"]["bill_id"], position: vote["position"])
     end
   end
 end

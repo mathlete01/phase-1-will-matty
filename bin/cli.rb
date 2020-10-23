@@ -111,7 +111,7 @@ class CLI
     when "home"
       self.menu
     else
-      binding.pry
+      #binding.pry
       get_all_votes_by_politician(member)
       industry_choice = industry_hash[input]
       create_bills_by_industry(industry_choice)
@@ -165,6 +165,8 @@ class CLI
       puts info
     end
   end
+
+
 
   ################### Industry Methods ########################################
   #displays all industries and their contributions
@@ -222,9 +224,14 @@ class CLI
 
   ##################### VOTE Methods ###############################
 
-  def self.votes_by_industry(member, industry_choice)
+  def votes_by_industry(member, industry_choice)
+    puts "CALLED: Votes By Industry"
     puts member.bills
+    #binding.pry
+    #puts "• #{bill["short_title"]}"
   end
+
+
 
   ######################### General Helper Methods ###############
 
@@ -265,6 +272,8 @@ class CLI
 
   def exit
     puts "#{"Remember".red} #{"to".white.on_black} #{"Vote".blue}!".bold
+    Vote.delete_all
+    Bill.delete_all
     return
   end
 end
