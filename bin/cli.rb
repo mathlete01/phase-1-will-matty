@@ -70,36 +70,33 @@ class CLI
     puts ">>> Enter STATE as two-letter abbreviation"
     state = get_input_big
     puts
-    #Mildly berrate the user for not following instructions
-    if state.length > 2
-      puts "#{state} is longer than 2 characters. Get it together!"
-      puts "Try again, but this time with only TWO letters"
-      self.get_state_input
-    end
     state
   end
 
-  #Find conress members based on location, currently only works for states not zipcodes
+  #Find congress members based on location, currently only works for states not zipcodes
   #Then calls display_congress_member to output infor on conress members
   def search_congress_by_location
     state = self.get_state_input
-
-    #Find congress members
+    #find congress members
     members = CongressMember.all.select { |m| m.state == state }
-    if members.empty?
-      puts "Oops! #{state} is not a state"
-      state = self.search_congress_by_location
-    end
+    if state.downcase == "exit"
+      self.exit
+    elsif state == "home"
+      self.menu
+    elsif !members
+      puts "Sorry, #{name} is not a sitting member of the senate. Please try again."
+      self.find_congress_member_by_name
+    else
+      #display info on congress members
+      menu_hash = {}
+      members.each_with_index do |member, index|
+        display_congress_member(member, (index + 1).to_s)
+        #Build out a menu hash to respomnd to the users selection
+        menu_hash[(index + 1).to_s] = member
+      end
 
-    #display info on congress members
-    menu_hash = {}
-    members.each_with_index do |member, index|
-      display_congress_member(member, (index + 1).to_s)
-      #Build out a menu hash to respomnd to the users selection
-      menu_hash[(index + 1).to_s] = member
+      self.more_info_on_member(menu_hash)
     end
-
-    self.more_info_on_member(menu_hash)
   end
 
   #Displays top 10 industries that gave member money and how much
@@ -121,15 +118,21 @@ class CLI
         puts "#{index + 1}. #{amount}...#{industry.name}"
       end
     end
+    self.select_industry_from_congress_member(industry_hash)
+  end
+
+  def select_industry_from_congress_member(industry_hash)
     puts
     puts ">>> Select an INDUSTRY above to see the senators it donated the most to"
     puts '(type "home" to return to the Main Menu)'
     input = get_input_small
-    case input
-    when "exit"
+    if input == "exit"
       self.exit
-    when "home"
+    elsif input == "home"
       self.menu
+    elsif !(1..industry_hash.length).to_a.include?(input.to_i)
+      puts "Sorry, #{input} is not a valid option. Please try again."
+      self.select_industry_from_congress_member(industry_hash)
     else
       self.get_members_from_industry(input, industry_hash)
       # For future development reasons
@@ -150,7 +153,7 @@ class CLI
     member = CongressMember.find_by_name(formatted_name)
     #Catch instances where selected member doesn't exist
     if name.downcase == "exit"
-      return
+      self.exit
     elsif name == "home"
       self.menu
     elsif !member
@@ -270,25 +273,7 @@ class CLI
     end
   end
 
-  ##################### VOTE Methods ###############################
-
-  #Fill in with sweet sweet code when we have data for votes and bills
-
   ######################### General Helper Methods ###############
-
-  #Currently not working come back and fix this to DRY out code if time permits
-
-  # def navigation(input, destination, params)
-  #   case input
-  #   when "exit"
-  #     return
-  #   when "home"
-  #     self.menu
-  #   else
-  #     binding.pry
-  #     method(destination(input, params)).call
-  #   end
-  # end
 
   def get_industries_from_member(member)
     industry_donations = []
@@ -312,8 +297,6 @@ class CLI
   end
 
   def exit
-    Vote.destroy_all
-    Bill.destroy_all
     puts "#{"Thanks".red} #{"for".white} #{"playing".blue}, #{"and".white} #{"remember".red} #{"to".white} #{"Vote".blue}#{"!".white}"
     return
   end

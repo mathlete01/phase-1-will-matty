@@ -1,4 +1,4 @@
-# Senate Money Tracker
+# Money & Politics
 
 Senate Money Tracker is a lightweight, Ruby, CLI application that quickly connectes senators with the top ten industries that have proivded them the lagest campaign contributions over the previous election cycle. All data provided by https://www.opensecrets.org/, and https://www.propublica.org/
 
@@ -34,7 +34,7 @@ Kyrsten Sinema's top 10 campain contributing industries are:
 ...
 ```
 
-Typing 4 and pressing enter will bring up a list of all candidates that have Women's Issues as a top 10 campaing contributer.
+Typing 4 and pressing enter will bring up a list of all candidates that have Women's Issues as a top 10 campaing contributor.
 
 ## Roadmap
 
