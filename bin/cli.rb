@@ -2,32 +2,43 @@ require "pry"
 
 class CLI
   def initialize
-    puts "     ___              ___      ___ ________  _________  _______             ___           "
-    puts "    _|\\  \\__          |\\  \\    /  /|\\   __  \\|\\___   ___\\\\  ___ \\          _|\\  \\__      "
-    puts "   |\\   ____\\         \\ \\  \\  /  / | \\  \\|\\  \\|___ \\  \\_\\ \\   __/|        |\\   ____\\     "
-    puts "   \\ \\  \\___|_         \\ \\  \\/  / / \\ \\  \\\\\\  \\   \\ \\  \\ \\ \\  \\_|/__      \\ \\  \\___|_    "
-    puts "    \\ \\_____  \\         \\ \\    / /   \\ \\  \\\\\\  \\   \\ \\  \\ \\ \\  \\_|\\ \\      \\ \\_____  \\    "
-    puts "     \\|____|\\  \\         \\ \\__/ /     \\ \\_______\\   \\ \\__\\ \\ \\_______\\      \\|____|\\  \\   "
-    puts "       ____\\_\\  \\         \\|__|/       \\|_______|    \\|__|  \\|_______|        ____\\_\\  \\  "
-    puts "      |\\___    __\\                                                           |\\___    __\\ "
-    puts "      \\|___|\\__\\_|                                                           \\|___|\\__\\_| "
-    puts "           \\|__|                                                                  \\|__|       "
-
-    puts "\nMoney-Vote Tracker"
-    puts "=" * 45
+    puts "                                                         "
+    puts "                                                       "
+    puts "                                                  __     "
+    puts "  ___ ___     ___     ___      __   __  __      /_\\ \\___ "
+    puts "/\\'__` __`\\  / __`\\/\\' _ `\\ /\\'__`\\/\\ \\/\\ \\    /\\___  __\\"
+    puts "/\\ \\/\\ \\/\\ \\/\\ \\L\\ \\/\\ \\/\\ \\/\\  __/\\ \\ \\_\\ \\   \\/__/\\_\\_/"
+    puts "\\ \\_\\ \\_\\ \\_\\ \\____/\\ \\_\\ \\_\\ \\____\\/`____         \\/_/ "
+    puts " \\/_/\\/_/\\/_/\\/___/  \\/_/\\/_/\\/____/ `/___/> \\       "
+    puts "                                        /\\___/           "
+    puts "                                        \\/__/            "
+    puts "               ___        __                             "
+    puts "              /\\_ \\    __/\\ \\__  __                      "
+    puts " _____     ___\\//\\ \\  /\\_\\ \\ ,_\\/\\_\\    ___    ____      "
+    puts "/\\ \\__`\\  / __`\\\\ \\ \\ \\/\\ \\ \\ \\/\\/\\ \\  /\\'__\\/\\',__\\     "
+    puts "\\ \\ \\L\\ \\/\\ \\L\\ \\\\_\\ \\_\\ \\ \\ \\ \\_\\ \\ \\/\\ \\__//\\__, `\\    "
+    puts " \\ \\ ,__/\\ \\____//\\____\\\\ \\_\\ \\__\\\\ \\_\\ \\____\\/\\____/    "
+    puts "  \\ \\ \\/  \\/___/ \\/____/ \\/_/\\/__/ \\/_/\\/____/\\/___/     "
+    puts "   \\ \\_\\                                                 "
+    puts "    \\/_/                                                 "
+    puts "                                                          "
+    puts "...see how they're connected"
+    puts ""
+    puts ""
   end
 
   #Main menu would be nice to add some ascii
   def menu
     puts
-    puts "Main Menu"
-    puts "-" * 30
-    puts "1. Search for congress members by location"
-    puts "2. Find congress members by name"
-    puts "3. Search legislation by industry"
-    puts "4. Exit"
+    puts "-" * 60
+    puts "Menu"
+    puts "-" * 60
+    puts "1. Start with a STATE"
+    puts "2. Start with a SENATOR"
+    puts "3. Start with an INDUSTRY"
+    puts "4. EXIT"
     puts
-    puts "Enter your choice:"
+    puts ">>> Enter your choice:"
     input = get_input_small
 
     self.main_switch_board(input)
@@ -45,7 +56,7 @@ class CLI
     when "exit"
       self.exit
     else
-      puts "#{input} is not a valid option "
+      puts "Sorry,  #{input} is not a valid option "
       self.menu
     end
   end
@@ -55,7 +66,7 @@ class CLI
   #Gets inputs about state to then search for congress members
   def get_state_input
     puts
-    puts "Enter state as two letter state code"
+    puts ">>> Enter state as two-letter abbreviation"
     state = get_input_big
     puts
     #Mildly berrate the user for not following instructions
@@ -75,7 +86,7 @@ class CLI
     #Find congress members
     members = CongressMember.all.select { |m| m.state == state }
     if members.empty?
-      puts "#{state} is not a state"
+      puts "Oops! #{state} is not a state"
       state = self.search_congress_by_location
     end
 
@@ -94,17 +105,23 @@ class CLI
   def display_congress_member_info(input, menu_hash)
     industry_hash = {}
     member = menu_hash.find { |key, value| key == input }.last
-    puts "#{member.name}'s top 10 campain contributing industries are:"
-    puts "-" * 45
+    puts "-" * 60
+    if member.party == "D" 
+      puts "Senator #{member.name.blue}'s top contributers by industry are:"
+    elsif member.party == "R"
+      puts "Senator #{member.name.red}'s top contributers by industry are:"
+    end
+    puts "-" * 60
     self.get_industries_from_member(member).each_with_index do |donation, index|
       donation.each do |industry, amount|
         industry_hash[(index + 1).to_s] = industry
-        puts "#{index + 1}. #{industry.name}, #{amount}"
+        #puts "#{index + 1}. #{industry.name}, #{amount}"
+        puts "#{index + 1}. #{amount}...#{industry.name}"
       end
     end
     puts
-    puts "Select an industry to see how #{member.name} has voted on bills relating to this industry"
-    puts 'or type "home" to return to the main menu.'
+    puts ">>> Select an industry above to see the senators it donated the most to"
+    puts '(type "home" to return to the Main Menu)'
     input = get_input_small
     case input
     when "exit"
@@ -124,7 +141,7 @@ class CLI
   #Finds congress member by name
   def find_congress_member_by_name
     puts
-    puts "Enter congress member name:"
+    puts ">>> Enter senator's full name:"
     name = gets.chomp
     puts
     ##### Fix this######
@@ -136,7 +153,7 @@ class CLI
     elsif name == "home"
       self.menu
     elsif !member
-      puts "#{name} is not a sitting member of congress. Please try again."
+      puts "Sorry, #{name} is not a sitting member of the senate. Please try again."
       self.find_congress_member_by_name
     else
       #Becuase we are only returning one Congress memeber index = 1
@@ -151,14 +168,15 @@ class CLI
 
   def more_info_on_member(menu_hash)
     puts
-    puts "Select congress member or type home to return to the main menu"
+    puts ">>> Select a senator above to see their top contributors by industry"
+    puts '(type "home" to return to the Main Menu)'
     input = get_input_small
     if input == "exit"
       self.exit
     elsif input == "home"
       self.menu
     elsif !(1..menu_hash.length).to_a.include?(input.to_i)
-      puts "#{input} is not a valid option. Please try again."
+      puts "Sorry, #{input} is not a valid option. Please try again."
       self.more_info_on_member(menu_hash)
     else
       self.display_congress_member_info(input, menu_hash)
@@ -167,7 +185,7 @@ class CLI
 
   #Outputs congress member data
   def display_congress_member(member, index = nil)
-    info = "#{index}. #{member.title} #{member.name},  #{member.party}"
+    info = "#{index}. #{member.title} #{member.name}, #{member.party}–#{member.state}"
     case member.party
     when "D"
       puts info.blue
@@ -188,13 +206,13 @@ class CLI
       industry_hash[(index + 1).to_s] = industry
       donations = industry.donations.map(&:amount).sum
       donations = self.to_money(donations)
-      puts "#{"#{index + 1}.".bold} #{industry.name}, #{donations}"
+      puts "#{"#{index + 1}.".bold} #{donations}...#{industry.name}"
     end
     self.industry_donation_menu_selection(industry_hash)
   end
 
   def industry_donation_menu_selection(industry_hash)
-    puts "\n Select industry to see which congress members received contributions"
+    puts "\n >>> Select industry to see which senators received contributions"
     input = get_input_small
 
     # self.navigation(input, :get_members_from_industry, industry_hash)
@@ -203,7 +221,7 @@ class CLI
     elsif input == "home"
       self.menu
     elsif !(1..industry_hash.length).to_a.include?(input.to_i)
-      puts "#{input} is not a valid option. Please try again."
+      puts "Sorry, #{input} is not a valid option. Please try again."
       self.industry_donation_menu_selection(industry_hash)
     else
       self.get_members_from_industry(input, industry_hash)
@@ -214,13 +232,14 @@ class CLI
   def get_members_from_industry(input, industry_hash)
     industry = industry_hash.find { |index, industry| index == input }.last
     donations = industry.donations
-    puts "\n\n#{industry.name} gave to the following congress members in the last election cycle"
-    puts "-" * 30
+    puts "-" * 60
+    puts "#{industry.name} contributed the following amounts to these senators' campaigns"
+    puts "-" * 60
     menu_hash = {}
     donations = donations.sort_by { |d| d.amount }.reverse
     donations.each_with_index do |donation, index|
       menu_hash[(index + 1).to_s] = donation.congress_member
-      info = "#{index + 1}. #{donation.congress_member.name}, #{donation.congress_member.state} #{donation.congress_member.party}, #{to_money(donation.amount)}"
+      info = "#{index + 1}. #{to_money(donation.amount)}...#{donation.congress_member.name}, #{donation.congress_member.party}–#{donation.congress_member.state}"
 
       if donation.congress_member.party == "R"
         puts info.red
@@ -234,7 +253,8 @@ class CLI
   end
 
   def member_select(menu_hash)
-    puts "\n\n Select a Congress Member to see the top 10 industries that contributed to thier campaign"
+    puts "\n>>> Select a senator above to see their top contributors by industry"
+    puts '(type "home" to return to the Main Menu)'
     input = get_input_small
 
     if input == "exit"
@@ -242,7 +262,7 @@ class CLI
     elsif input == "home"
       self.menu
     elsif !(1..menu_hash.length).to_a.include?(input.to_i)
-      puts "#{input} is not a valid option. Please try again."
+      puts "Sorry, #{input} is not a valid option. Please try again."
       self.member_select(menu_hash)
     else
       self.display_congress_member_info(input, menu_hash)
@@ -292,8 +312,8 @@ class CLI
 
   def exit
     Vote.destroy_all
-    Bill.destroy_all
-    puts "#{"Remember".red} #{"to".white.on_black} #{"Vote".blue}!".on_black.bold
+    Bill.destroy_all 
+    puts "#{"Thanks".red} #{"for".white} #{"playing".blue}, #{"and".white} #{"remember".red} #{"to".white} #{"Vote".blue}#{"!".white}"
     return
   end
 end
