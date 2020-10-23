@@ -124,6 +124,7 @@ class CLI
     self.select_industry_from_congress_member(industry_hash)
   end
 
+  # allows user to select an industry from a congress member page
   def select_industry_from_congress_member(industry_hash)
     puts
     puts ">>> Select an INDUSTRY above to see the senators it donated the most to"
@@ -204,8 +205,8 @@ class CLI
   end
 
   ################### Industry Methods ########################################
-  #displays all industries and their contributions
 
+  #displays all industries and their contributions
   def industry_donations_menu
     puts "\nTop campaign contributing industries and total amount contributed across all capmaigns in last election cycle"
     clear
@@ -262,6 +263,7 @@ class CLI
     self.member_select(menu_hash)
   end
 
+  #Allows user to select congress member
   def member_select(menu_hash)
     puts "\n>>> Select a SENATOR above to see their top contributors by industry"
     puts '(type "home" to return to the Main Menu)'
