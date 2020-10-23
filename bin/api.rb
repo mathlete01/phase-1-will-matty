@@ -9,6 +9,7 @@ pro_pub_key = "PUT YOUR PRO PULBICA KEY HERE!!!"
 open_secrets_key = "PUT YOUR OPEN SECRETS KEY HERE!!!"
 
 def create_congress_members
+  #Need to change this conditional if project is expanded to include all of congress
   if CongressMember.all.length >= 100
     puts "• Politicians DB already seeded"
   else
