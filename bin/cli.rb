@@ -42,9 +42,6 @@ class CLI
       self.find_congress_member_by_name
     when "3"
       self.industry_donations_menu
-    when "5"
-      puts "Remember.red to Vote!"
-      return
     when "exit"
       self.exit
     else
@@ -77,6 +74,10 @@ class CLI
 
     #Find congress members
     members = CongressMember.all.select { |m| m.state == state }
+    if members.empty?
+      puts "#{state} is not a state"
+      state = self.search_congress_by_location
+    end
 
     #display info on congress members
     menu_hash = {}
@@ -111,11 +112,20 @@ class CLI
     when "home"
       self.menu
     else
+<<<<<<< HEAD
       #binding.pry
       get_all_votes_by_politician(member)
       industry_choice = industry_hash[input]
       create_bills_by_industry(industry_choice)
       self.votes_by_industry(member, industry_choice)
+=======
+      self.get_members_from_industry(input, industry_hash)
+      # For future development reasons
+      # industry_choice = industry_hash[input]
+      # create_bills_by_industry(industry_choice)
+      # get_all_votes_by_politician(member)
+      # self.votes_by_industry(member, industry_choice)
+>>>>>>> final_work
     end
   end
 
@@ -146,11 +156,21 @@ class CLI
   end
 
   #display menu to get more info on members
+
   def more_info_on_member(menu_hash)
     puts
     puts "Select congress member or type home to return to the main menu"
     input = get_input_small
-    input == "home" ? self.menu : self.display_congress_member_info(input, menu_hash)
+    if input == "exit"
+      self.exit
+    elsif input == "home"
+      self.menu
+    elsif !(1..menu_hash.length).to_a.include?(input.to_i)
+      puts "#{input} is not a valid option. Please try again."
+      self.more_info_on_member(menu_hash)
+    else
+      self.display_congress_member_info(input, menu_hash)
+    end
   end
 
   #Outputs congress member data
@@ -180,6 +200,10 @@ class CLI
       donations = self.to_money(donations)
       puts "#{"#{index + 1}.".bold} #{industry.name}, #{donations}"
     end
+    self.industry_donation_menu_selection(industry_hash)
+  end
+
+  def industry_donation_menu_selection(industry_hash)
     puts "\n Select industry to see which congress members received contributions"
     input = get_input_small
 
@@ -188,18 +212,25 @@ class CLI
       self.exit
     elsif input == "home"
       self.menu
+    elsif !(1..industry_hash.length).to_a.include?(input.to_i)
+      puts "#{input} is not a valid option. Please try again."
+      self.industry_donation_menu_selection(industry_hash)
     else
       self.get_members_from_industry(input, industry_hash)
     end
   end
 
+  # Lists all congress members that an industry has donated to
   def get_members_from_industry(input, industry_hash)
     industry = industry_hash.find { |index, industry| index == input }.last
     donations = industry.donations
     puts "\n\n#{industry.name} gave to the following congress members in the last election cycle"
     puts "-" * 30
+    menu_hash = {}
+    donations = donations.sort_by { |d| d.amount }.reverse
     donations.each_with_index do |donation, index|
-      info = "#{index + 1}. #{donation.congress_member.name}, #{donation.congress_member.party}, #{to_money(donation.amount)}"
+      menu_hash[(index + 1).to_s] = donation.congress_member
+      info = "#{index + 1}. #{donation.congress_member.name}, #{donation.congress_member.state} #{donation.congress_member.party}, #{to_money(donation.amount)}"
 
       if donation.congress_member.party == "R"
         puts info.red
@@ -209,27 +240,28 @@ class CLI
         puts info
       end
     end
-    puts "\n\n Select a Congress  Memeber to see how they voted on bills related to #{industry.name}"
+    self.member_select(menu_hash)
+  end
+
+  def member_select(menu_hash)
+    puts "\n\n Select a Congress Member to see the top 10 industries that contributed to thier campaign"
     input = get_input_small
 
     if input == "exit"
       self.exit
     elsif input == "home"
       self.menu
+    elsif !(1..menu_hash.length).to_a.include?(input.to_i)
+      puts "#{input} is not a valid option. Please try again."
+      self.member_select(menu_hash)
     else
-      puts "See all the votes!!!"
-      #votes_by_congress_memeber(input, industry_hash)
+      self.display_congress_member_info(input, menu_hash)
     end
   end
 
   ##################### VOTE Methods ###############################
 
-  def votes_by_industry(member, industry_choice)
-    puts "CALLED: Votes By Industry"
-    puts member.bills
-    #binding.pry
-    #puts "• #{bill["short_title"]}"
-  end
+  #Fill in with sweet sweet code when we have data for votes and bills
 
 
 
@@ -271,9 +303,15 @@ class CLI
   end
 
   def exit
+<<<<<<< HEAD
     puts "#{"Remember".red} #{"to".white.on_black} #{"Vote".blue}!".bold
     Vote.delete_all
     Bill.delete_all
+=======
+    Vote.destroy_all
+    Bill.destroy_all
+    puts "#{"Remember".red} #{"to".white.on_black} #{"Vote".blue}!".on_black.bold
+>>>>>>> final_work
     return
   end
 end
